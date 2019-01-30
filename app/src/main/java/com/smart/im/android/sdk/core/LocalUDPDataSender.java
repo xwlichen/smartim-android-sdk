@@ -7,4 +7,5 @@ package com.smart.im.android.sdk.core;
  * @description :
  */
 public class LocalUDPDataSender {
+    private final  static  String TAG=LocalUDPDataSender.class
 }
