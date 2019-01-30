@@ -12,7 +12,7 @@ import com.smart.im.android.sdk.ClientCoreSDK;
  * @email : 1960003945@qq.com
  * @description :
  */
-public class LoginUtils {
+public class LogUtils {
 
     private final static String DEFAULT_TAG = "=====SMART-IM=====";
     private final static int MAX_LENGTH = 3500;

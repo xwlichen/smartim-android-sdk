@@ -7,6 +7,8 @@ package com.smart.im.android.sdk.utils;
  * @description :
  */
 
+import com.smart.im.android.sdk.ClientCoreSDK;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -100,6 +102,7 @@ public class ThreadPoolManager {
                 mPool.getQueue()
                         .remove(task);
             }
+
         }
 
     }
