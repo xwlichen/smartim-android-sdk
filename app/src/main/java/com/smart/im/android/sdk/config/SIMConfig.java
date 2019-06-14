@@ -1,6 +1,4 @@
-package com.smart.im.android.sdk.conf;
-
-import com.smart.im.android.sdk.core.KeepAliveDaemon;
+package com.smart.im.android.sdk.config;
 
 /**
  * @date : 2018/11/29 下午3:55
@@ -8,7 +6,8 @@ import com.smart.im.android.sdk.core.KeepAliveDaemon;
  * @email : 1960003945@qq.com
  * @description :配置实体类
  */
-public class ConfigEntity {
+public class SIMConfig {
+    public static String APP_KEY=null;
     public static String SEVER_IP = "";
     public static int SERVER_PORT;
     public static int LOCAL_PORT;
