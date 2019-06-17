@@ -1,4 +1,4 @@
-package com.smart.im.android.sdk.config;
+package com.smart.im.android.sdk.entity;
 
 /**
  * @date : 2018/11/29 下午3:55
@@ -7,46 +7,50 @@ package com.smart.im.android.sdk.config;
  * @description :配置实体类
  */
 public class SIMConfig {
-    public static String APP_KEY=null;
+    public static String APP_KEY = null;
     public static String SEVER_IP = "";
     public static int SERVER_PORT;
     public static int LOCAL_PORT;
 
+    //默认重连一个周期失败间隔时长
+    public static final int DEFAULT_RECONNECT_INTERVAL = 3 * 1000;
+    //默认心时间跳间隔
+    public static int DEFAULT_KEEPALIVE_INTERVAL = 0;
+    //默认连接超时
+    public static int DEFAULT_CONNECT_TIMEOUT = 0;
 
     public static void setSenseMode(SenseMode mode) {
-        int keepAliveInterval = 0;
-        int networkConnectionTimeout = 0;
         switch (mode) {
             case MODE_3S: {
-                keepAliveInterval = 3000;// 3s
-                networkConnectionTimeout = 3000 * 3 + 1000;// 10s
+                DEFAULT_KEEPALIVE_INTERVAL = 3000;// 3s
+                DEFAULT_CONNECT_TIMEOUT = 3000 * 3 + 1000;// 10s
                 break;
             }
             case MODE_10S:
-                keepAliveInterval = 10000;// 10s
-                networkConnectionTimeout = 10000 * 2 + 1000;// 21s
+                DEFAULT_KEEPALIVE_INTERVAL = 10000;// 10s
+                DEFAULT_CONNECT_TIMEOUT = 10000 * 2 + 1000;// 21s
                 break;
             case MODE_30S:
-                keepAliveInterval = 30000;// 30s
-                networkConnectionTimeout = 30000 * 2 + 1000;// 61s
+                DEFAULT_KEEPALIVE_INTERVAL = 30000;// 30s
+                DEFAULT_CONNECT_TIMEOUT = 30000 * 2 + 1000;// 61s
                 break;
             case MODE_60S:
-                keepAliveInterval = 60000;// 60s
-                networkConnectionTimeout = 60000 * 2 + 1000;// 121s
+                DEFAULT_KEEPALIVE_INTERVAL = 60000;// 60s
+                DEFAULT_CONNECT_TIMEOUT = 60000 * 2 + 1000;// 121s
                 break;
             case MODE_120S:
-                keepAliveInterval = 120000;// 120s
-                networkConnectionTimeout = 120000 * 2 + 1000;// 241s
+                DEFAULT_KEEPALIVE_INTERVAL = 120000;// 120s
+                DEFAULT_CONNECT_TIMEOUT = 120000 * 2 + 1000;// 241s
                 break;
             default:
                 break;
         }
 
-        if (keepAliveInterval > 0) {
-//            KeepAliveDaemon.KEEP_ALIVE_INTERVAL = keepAliveInterval;
+        if (DEFAULT_KEEPALIVE_INTERVAL > 0) {
+//            KeepAliveDaemon.DEFAULT_KEEPALIVE_INTERVAL = DEFAULT_KEEPALIVE_INTERVAL;
         }
-        if (networkConnectionTimeout > 0) {
-//            KeepAliveDaemon.NETWORK_CONNECTION_TIME_OUT = networkConnectionTimeout;
+        if (DEFAULT_CONNECT_TIMEOUT > 0) {
+//            KeepAliveDaemon.NETWORK_CONNECTION_TIME_OUT = DEFAULT_CONNECT_TIMEOUT;
         }
     }
 

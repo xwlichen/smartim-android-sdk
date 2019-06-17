@@ -1,6 +1,6 @@
-package com.smart.im.android.sdk;
+package com.smart.im.android.sdk.interf;
 
-import com.smart.im.android.sdk.config.SIMConfig;
+import com.smart.im.android.sdk.entity.SIMConfig;
 import com.smart.im.android.sdk.listener.OnConnectListener;
 import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
@@ -12,7 +12,7 @@ import com.smart.im.protocal.proto.ProtocalEntity;
  * @email : 1960003945@qq.com
  * @description :
  */
-public interface IClientCore {
+public interface SMClientCoreInterface {
 
 
     /**
@@ -34,10 +34,17 @@ public interface IClientCore {
     void init(SIMConfig config, OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener);
 
 
+
     /**
      * 重连
      */
     void reConnect();
+
+    /**
+     * 重连（具体实现）
+     * @param isFirst 是否是首次连接
+     */
+    void resetConnect(boolean isFirst);
 
 
     /**
@@ -65,6 +72,12 @@ public interface IClientCore {
 
 
 
+    void receivedMsg(ProtocalEntity.Protocal protocal);
 
+
+    /**
+     * 释放资源，关闭连接
+     */
+    void release();
 
 }

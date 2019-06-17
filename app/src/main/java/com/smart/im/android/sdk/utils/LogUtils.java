@@ -3,7 +3,7 @@ package com.smart.im.android.sdk.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.smart.im.android.sdk.ClientCoreSDK;
+import com.smart.im.android.sdk.core.SMClientCore;
 
 
 /**
@@ -24,8 +24,8 @@ public class LogUtils {
      *
      * @param msg 相关内容
      */
-    public static void info(String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void i(String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
         Log.i(DEFAULT_TAG, printLong(msg));
@@ -38,12 +38,42 @@ public class LogUtils {
      * @param sourceName 来源的名称
      * @param msg        相关内容
      */
-    public static void info(String sourceName, String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void i(String sourceName, String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
-        Log.i(DEFAULT_TAG, "【" + sourceName + "】"+LINE + printLong(msg));
+        Log.i(sourceName, LINE + printLong(msg));
     }
+
+
+
+    /**
+     * debug级别日志
+     *
+     * @param msg 相关内容
+     */
+    public static void d(String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
+            return;
+        }
+        Log.d(DEFAULT_TAG, printLong(msg));
+    }
+
+
+    /**
+     * debug级别日志
+     *
+     * @param sourceName 来源的名称
+     * @param msg        相关内容
+     */
+    public static void d(String sourceName, String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
+            return;
+        }
+        Log.d(sourceName, LINE + printLong(msg));
+    }
+
+
 
 
     /**
@@ -51,8 +81,8 @@ public class LogUtils {
      *
      * @param msg 相关内容
      */
-    public static void warn(String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void w(String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
         Log.w(DEFAULT_TAG, printLong(msg));
@@ -65,11 +95,11 @@ public class LogUtils {
      * @param sourceName 来源的名称
      * @param msg        相关内容
      */
-    public static void warn(String sourceName, String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void w(String sourceName, String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
-        Log.w(DEFAULT_TAG, "【" + sourceName + "】"+LINE + printLong(msg));
+        Log.w(sourceName, LINE + printLong(msg));
     }
 
 
@@ -78,8 +108,8 @@ public class LogUtils {
      *
      * @param msg 相关内容
      */
-    public static void error(String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void e(String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
         Log.e(DEFAULT_TAG, printLong(msg));
@@ -92,11 +122,11 @@ public class LogUtils {
      * @param sourceName 来源的名称
      * @param msg        相关内容
      */
-    public static void error(String sourceName, String msg) {
-        if (!ClientCoreSDK.DEBUG || TextUtils.isEmpty(msg)) {
+    public static void e(String sourceName, String msg) {
+        if (!SMClientCore.DEBUG || TextUtils.isEmpty(msg)) {
             return;
         }
-        Log.e(DEFAULT_TAG, "【" + sourceName + "】" +LINE+ printLong(msg));
+        Log.e(sourceName, LINE+ printLong(msg));
     }
 
 

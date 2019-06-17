@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.smart.im.android.sdk.ClientCoreSDK;
 import com.smart.im.android.sdk.utils.LogUtils;
 
 /**

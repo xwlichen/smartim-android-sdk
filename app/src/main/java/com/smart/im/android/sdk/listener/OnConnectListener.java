@@ -6,5 +6,15 @@ package com.smart.im.android.sdk.listener;
  * @email : 1960003945@qq.com
  * @description :
  */
-public class OnConnectListener {
+public interface OnConnectListener {
+
+
+    /**
+     * 连接状态（服务器连接、登陆验证等）
+     * @param code 以ProtocalFactory 的code为标准
+     */
+    void onConnectStatus(int code);
+
+
+
 }
