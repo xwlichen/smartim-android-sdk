@@ -11,7 +11,7 @@ public interface OnConnectListener {
 
     /**
      * 连接状态（服务器连接、登陆验证等）
-     * @param code 以ProtocalFactory 的code为标准
+     * @param code  1-连接成功（ConfigEntity.CONNECT_STATE_SUCCESSFUL） 需要发送登陆相关信息
      */
     void onConnectStatus(int code);
 

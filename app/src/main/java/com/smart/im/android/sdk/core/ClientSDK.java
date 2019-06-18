@@ -1,7 +1,9 @@
 package com.smart.im.android.sdk.core;
 
-import com.smart.im.android.sdk.entity.SIMConfig;
-import com.smart.im.android.sdk.interf.SMClientCoreInterface;
+import android.text.TextUtils;
+
+import com.smart.im.android.sdk.ClientCoreWrapper;
+import com.smart.im.android.sdk.entity.ConfigEntity;
 import com.smart.im.android.sdk.listener.OnConnectListener;
 import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
@@ -15,7 +17,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.util.internal.StringUtil;
+
+import static com.smart.im.android.sdk.entity.ConfigEntity.DEFAULT_RECONNECT_INTERVAL;
 
 /**
  * @date : 2019/1/23 上午10:55
@@ -23,34 +26,34 @@ import io.netty.util.internal.StringUtil;
  * @email : 1960003945@qq.com
  * @description : Android端sdk
  */
-public class SMClientCore implements SMClientCoreInterface {
+public class ClientSDK extends ClientCoreWrapper {
 
-    public static final String TAG = SMClientCore.class.getSimpleName();
+    public static final String TAG = ClientSDK.class.getSimpleName();
 
     public static boolean DEBUG = true;
-    private static volatile SMClientCore instance;
+    private static volatile ClientSDK instance;
 
     private Bootstrap bootstrap;
     private Channel channel;
     private ClientCoreHander clientCoreHander;
     private boolean isClosed = false;
     private boolean isReconnecting = false;// 是否正在进行重连
+    private int connectStatus = ConfigEntity.CONNECT_STATE_FAILURE;//连接状态，初始化为连接失败
 
     private OnEventListener onEventListener;
     private OnConnectListener onConnectListener;
     private OnQosListener onQosListener;
-    private ExecutorServiceFactory loopGroup;// 线程池工厂
 
 
-    private int reconnectInterval = SIMConfig.DEFAULT_RECONNECT_INTERVAL;
-    private int connectTimeout = SIMConfig.DEFAULT_CONNECT_TIMEOUT;
-    private int keepAliveIntercal = SIMConfig.DEFAULT_KEEPALIVE_INTERVAL;
+//    private int reconnectInterval = DEFAULT_RECONNECT_INTERVAL;
+//    private int connectTimeout = ConfigEntity.DEFAULT_CONNECT_TIMEOUT;
+//    private int keepAliveIntercal = ConfigEntity.DEFAULT_KEEPALIVE_INTERVAL;
 
 
-    public static SMClientCore getInstance() {
+    public static ClientSDK getInstance() {
         if (instance == null) {
-            synchronized (SMClientCore.class) {
-                instance = new SMClientCore();
+            synchronized (ClientSDK.class) {
+                instance = new ClientSDK();
             }
         }
         return instance;
@@ -58,16 +61,26 @@ public class SMClientCore implements SMClientCoreInterface {
 
 
     public static void setDebug(boolean debug) {
-        SMClientCore.DEBUG = debug;
+        ClientSDK.DEBUG = debug;
     }
 
-    public SMClientCore isDebug(boolean debug) {
-        DEBUG = debug;
-        return this;
+    public boolean isDebug() {
+        return ClientSDK.DEBUG;
+    }
+
+
+    @Override
+    public ExecutorServiceFactory getLoopGroup() {
+        return loopGroup;
     }
 
     @Override
-    public void init(SIMConfig config, OnEventListener onEventListener, OnConnectListener onConnectListener) {
+    public ProtocalEntity.Protocal createKeepAliveMsg() {
+        return null;
+    }
+
+    @Override
+    public void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener) {
         release();
         isClosed = false;
         this.onEventListener = onEventListener;
@@ -80,7 +93,7 @@ public class SMClientCore implements SMClientCoreInterface {
     }
 
     @Override
-    public void init(SIMConfig config, OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener) {
+    public void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener) {
         release();
         isClosed = false;
         this.onEventListener = onEventListener;
@@ -88,6 +101,9 @@ public class SMClientCore implements SMClientCoreInterface {
         this.onQosListener = onQosListener;
         loopGroup = new ExecutorServiceFactory();
         loopGroup.initBossLoopGroup();// 初始化重连线程组
+
+        reConnect();
+
 
 
     }
@@ -103,7 +119,7 @@ public class SMClientCore implements SMClientCoreInterface {
     public void resetConnect(boolean isFirst) {
         if (!isFirst) {
             try {
-                Thread.sleep(SIMConfig.DEFAULT_RECONNECT_INTERVAL);
+                Thread.sleep(DEFAULT_RECONNECT_INTERVAL);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -181,11 +197,12 @@ public class SMClientCore implements SMClientCoreInterface {
         EventLoopGroup loopGroup = new NioEventLoopGroup(4);
         bootstrap = new Bootstrap();
         bootstrap.group(loopGroup).channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_RCVBUF,1024)
-                .option(ChannelOption.SO_SNDBUF,1024);;
+                .option(ChannelOption.SO_RCVBUF, 1024)
+                .option(ChannelOption.SO_SNDBUF, 1024);
+        ;
         // 设置初始化Channel
-        clientCoreHander=new ClientCoreHander();
-        bootstrap.handler(new UDPChannelInboundHandler(clientCoreHander));
+        clientCoreHander = new ClientCoreHander(this);
+        bootstrap.handler(new UDPChannelInitializerHandler(clientCoreHander));
     }
 
     /**
@@ -208,10 +225,11 @@ public class SMClientCore implements SMClientCoreInterface {
 
     /**
      * 连接状态回调
+     *
      * @param code
      */
-    private void onConnectStatusCallback(int code){
-        if (onConnectListener!=null){
+    private void onConnectStatusCallback(int code) {
+        if (onConnectListener != null) {
             onConnectListener.onConnectStatus(code);
         }
     }
@@ -231,6 +249,23 @@ public class SMClientCore implements SMClientCoreInterface {
     }
 
 
+    /**
+     * 连接服务器
+     */
+    private void toServer() {
+        try {
+            channel = bootstrap.connect(ConfigEntity.SERVER_IP, ConfigEntity.SERVER_PORT).sync().channel();
+        } catch (Exception e) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            LogUtils.e(TAG, String.format("连接Server(ip[%s], port[%s])失败", ConfigEntity.SERVER_IP, ConfigEntity.SERVER_PORT));
+            channel = null;
+        }
+    }
+
 
     /**
      * 重连任务
@@ -247,7 +282,7 @@ public class SMClientCore implements SMClientCoreInterface {
         public void run() {
             // 非首次进行重连，执行到这里即代表已经连接失败，回调连接状态到应用层
             if (!isFirst) {
-                //onConnectStatusCallback();
+                onConnectStatusCallback(ConfigEntity.CONNECT_STATE_FAILURE);
             }
 
             try {
@@ -255,7 +290,7 @@ public class SMClientCore implements SMClientCoreInterface {
                 loopGroup.destroyWorkLoopGroup();
 
                 while (!isClosed) {
-                    if(!isNetworkAvailable()) {
+                    if (!isNetworkAvailable()) {
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -266,16 +301,16 @@ public class SMClientCore implements SMClientCoreInterface {
 
                     // 网络可用才进行连接
                     int status;
-                    if ((status = reConnect()) == SIMConfig.CONNECT_STATE_SUCCESSFUL) {
+                    if ((status = reConnect()) == ConfigEntity.CONNECT_STATE_SUCCESSFUL) {
                         onConnectStatusCallback(status);
                         // 连接成功，跳出循环
                         break;
                     }
 
-                    if (status == SIMConfig.CONNECT_STATE_FAILURE) {
+                    if (status == ConfigEntity.CONNECT_STATE_FAILURE) {
                         onConnectStatusCallback(status);
                         try {
-                            Thread.sleep(SIMConfig.DEFAULT_RECONNECT_INTERVAL);
+                            Thread.sleep(DEFAULT_RECONNECT_INTERVAL);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -308,7 +343,7 @@ public class SMClientCore implements SMClientCoreInterface {
                 initBootstrap();
                 return connectServer();
             }
-            return SIMConfig.CONNECT_STATE_FAILURE;
+            return ConfigEntity.CONNECT_STATE_FAILURE;
 
         }
 
@@ -320,51 +355,45 @@ public class SMClientCore implements SMClientCoreInterface {
         private int connectServer() {
             // 如果服务器地址无效，直接回调连接状态，不再进行连接
             // 有效的服务器地址示例：127.0.0.1 8860
-            if (serverUrlList == null || serverUrlList.size() == 0) {
-                return SIMConfig.CONNECT_STATE_FAILURE;
+            if (TextUtils.isEmpty(ConfigEntity.SERVER_IP) || ConfigEntity.SERVER_PORT <= 0) {
+                return ConfigEntity.CONNECT_STATE_FAILURE;
             }
 
-            for (int i = 0; (!isClosed && i < serverUrlList.size()); i++) {
-                String serverUrl = serverUrlList.get(i);
-                // 如果服务器地址无效，直接回调连接状态，不再进行连接
-                if (StringUtil.isNullOrEmpty(serverUrl)) {
-                    return SIMConfig.CONNECT_STATE_FAILURE;
+            if (isClosed || !isNetworkAvailable()) {
+                return ConfigEntity.CONNECT_STATE_FAILURE;
+            }
+
+            for (int i = 1; i <= ConfigEntity.DEFAULT_RECONNECT_COUNT; i++) {
+                // 如果ims已关闭，或网络不可用，直接回调连接状态，不再进行连接
+                if (isClosed || !isNetworkAvailable()) {
+                    return ConfigEntity.CONNECT_STATE_FAILURE;
                 }
 
-                String[] address = serverUrl.split(" ");
-                for (int j = 1; j <= SIMConfig.DEFAULT_RECONNECT_COUNT; j++) {
-                    // 如果ims已关闭，或网络不可用，直接回调连接状态，不再进行连接
-                    if (isClosed || !isNetworkAvailable()) {
-                        return SIMConfig.CONNECT_STATE_FAILURE;
-                    }
+                // 回调连接状态
+                if (connectStatus != ConfigEntity.CONNECT_STATE_CONNECTING) {
+                    onConnectStatusCallback(ConfigEntity.CONNECT_STATE_CONNECTING);
+                }
+                LogUtils.e(TAG, String.format("正在进行[%s]的第[%d]次连接，当前重连延时时长为[%dms]", ConfigEntity.SERVER_IP + ConfigEntity.SERVER_PORT, i, i * ConfigEntity.DEFAULT_RECONNECT_INTERVAL));
 
-                    // 回调连接状态
-                    if (connectStatus != SIMConfig.CONNECT_STATE_CONNECTING) {
-                        onConnectStatusCallback(SIMConfig.CONNECT_STATE_CONNECTING);
-                    }
-                    System.out.println(String.format("正在进行『%s』的第『%d』次连接，当前重连延时时长为『%dms』", serverUrl, j, j * getReconnectInterval()));
+                try {
 
-                    try {
-                        currentHost = address[0];// 获取host
-                        currentPort = Integer.parseInt(address[1]);// 获取port
-                        toServer();// 连接服务器
+                    toServer();// 连接服务器
 
-                        // channel不为空，即认为连接已成功
-                        if (channel != null) {
-                            return SIMConfig.CONNECT_STATE_SUCCESSFUL;
-                        } else {
-                            // 连接失败，则线程休眠n * 重连间隔时长
-                            Thread.sleep(j * getReconnectInterval());
-                        }
-                    } catch (InterruptedException e) {
-                        release();
-                        break;// 线程被中断，则强制关闭
+                    // channel不为空，即认为连接已成功
+                    if (channel != null) {
+                        return ConfigEntity.CONNECT_STATE_SUCCESSFUL;
+                    } else {
+                        // 连接失败，则线程休眠n * 重连间隔时长
+                        Thread.sleep(i * ConfigEntity.DEFAULT_RECONNECT_INTERVAL);
                     }
+                } catch (InterruptedException e) {
+                    release();
+                    break;// 线程被中断，则强制关闭
                 }
             }
 
             // 执行到这里，代表连接失败
-            return SIMConfig.CONNECT_STATE_FAILURE;
+            return ConfigEntity.CONNECT_STATE_FAILURE;
         }
     }
 }

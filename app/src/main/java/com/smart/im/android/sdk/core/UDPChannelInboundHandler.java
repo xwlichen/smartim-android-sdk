@@ -3,11 +3,13 @@ package com.smart.im.android.sdk.core;
 import android.util.Log;
 
 import com.smart.im.android.sdk.utils.LogUtils;
+import com.smart.im.protocal.proto.ProtocalEntity;
 
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
@@ -16,7 +18,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @email : 1960003945@qq.com
  * @description :
  */
-public class UDPChannelInboundHandler extends SimpleChannelInboundHandler<ByteBuf>
+public class UDPChannelInboundHandler extends ChannelInboundHandlerAdapter
 {
     private static final String  TAG = UDPChannelInboundHandler.class.getSimpleName();
 
@@ -30,7 +32,7 @@ public class UDPChannelInboundHandler extends SimpleChannelInboundHandler<ByteBu
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) {
         try{
-            clientCoreHandler.exceptionCaught(ctx.channel(), e);
+            clientCoreHandler.exceptionCaught(ctx, e);
         }catch (Exception e2){
             LogUtils.e(TAG,e.getMessage().toString());
         }
@@ -45,11 +47,12 @@ public class UDPChannelInboundHandler extends SimpleChannelInboundHandler<ByteBu
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        clientCoreHandler.sessionClosed(ctx.channel());
+        clientCoreHandler.sessionClosed(ctx);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf bytebuf) throws Exception {
-        clientCoreHandler.messageReceived(ctx.channel(), bytebuf);
+    public void channelRead(ChannelHandlerContext ctx,  Object msg) throws Exception {
+        ProtocalEntity.Protocal protocal=(ProtocalEntity.Protocal)msg;
+        clientCoreHandler.msgRecevied(protocal);
     }
 }
