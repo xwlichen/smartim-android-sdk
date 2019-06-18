@@ -1,7 +1,7 @@
 package com.smart.im.android.sdk.core;
 
 import com.smart.im.android.sdk.entity.ConfigEntity;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 import com.smart.im.protocal.proto.ProtocalTypeEntity;
 
 import io.netty.channel.Channel;
@@ -38,7 +38,7 @@ public class UDPChannelInitializerHandler extends ChannelInitializer<Channel> {
 
         // 增加protobuf编解码支持
         pipeline.addLast(new ProtobufEncoder());
-        pipeline.addLast(new ProtobufDecoder(ProtocalEntity.Protocal.getDefaultInstance()));
+        pipeline.addLast(new ProtobufDecoder(MessageProtocalEntity.Protocal.getDefaultInstance()));
 
         pipeline.addLast(new ReadTimeoutHandler(ConfigEntity.SESION_RECYCLER_EXPIRE));
 

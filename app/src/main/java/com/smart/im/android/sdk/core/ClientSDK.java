@@ -9,7 +9,7 @@ import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
 import com.smart.im.android.sdk.manager.ExecutorServiceFactory;
 import com.smart.im.android.sdk.utils.LogUtils;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -75,7 +75,12 @@ public class ClientSDK extends ClientCoreWrapper {
     }
 
     @Override
-    public ProtocalEntity.Protocal createKeepAliveMsg() {
+    public MessageProtocalEntity.Protocal createLoginMsg() {
+        return null;
+    }
+
+    @Override
+    public MessageProtocalEntity.Protocal createKeepAliveMsg() {
         return null;
     }
 
@@ -150,17 +155,17 @@ public class ClientSDK extends ClientCoreWrapper {
     }
 
     @Override
-    public int sendMsg(ProtocalEntity.Protocal protocal) {
+    public int sendMsg(MessageProtocalEntity.Protocal protocal) {
         return 0;
     }
 
     @Override
-    public int sendMsg(ProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager) {
+    public int sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager) {
         return 0;
     }
 
     @Override
-    public void receivedMsg(ProtocalEntity.Protocal protocal) {
+    public void receivedMsg(MessageProtocalEntity.Protocal protocal) {
         if (onEventListener != null) {
             onEventListener.dispatchMsg(protocal);
         }

@@ -2,7 +2,7 @@ package com.smart.im.android.sdk;
 
 import com.smart.im.android.sdk.interf.IClientCore;
 import com.smart.im.android.sdk.manager.ExecutorServiceFactory;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 /**
  * @date : 2019-06-18 16:03
@@ -27,11 +27,11 @@ public abstract class ClientCoreWrapper implements IClientCore {
      * 创建登陆信息
      * @return protocal
      */
-    public abstract ProtocalEntity.Protocal createLoginMsg();
+    public abstract MessageProtocalEntity.Protocal createLoginMsg();
 
     /**
      * 创建心跳信息
      * @return protocal
      */
-    public abstract ProtocalEntity.Protocal createKeepAliveMsg();
+    public abstract MessageProtocalEntity.Protocal createKeepAliveMsg();
 }

@@ -1,6 +1,6 @@
 package com.smart.im.android.sdk.listener;
 
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 /**
  * @date : 2019-06-11 14:55
@@ -14,7 +14,7 @@ public interface OnEventListener {
      * 分发消息
      * @param protocal
      */
-    void dispatchMsg(ProtocalEntity.Protocal protocal);
+    void dispatchMsg(MessageProtocalEntity.Protocal protocal);
 
 
     /**

@@ -4,7 +4,7 @@ import com.smart.im.android.sdk.entity.ConfigEntity;
 import com.smart.im.android.sdk.listener.OnConnectListener;
 import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 /**
  * @date : 2019-06-11 14:31
@@ -65,7 +65,7 @@ public interface IClientCore {
      * @param protocal 自定义消息协议
      * @return code
      */
-    int sendMsg(ProtocalEntity.Protocal protocal);
+    int sendMsg(MessageProtocalEntity.Protocal protocal);
 
 
     /**
@@ -75,10 +75,10 @@ public interface IClientCore {
      * @param isJoinTimeoutManager 是否加入发送超时管理器
      * @return code
      */
-    int sendMsg(ProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager);
+    int sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager);
 
 
-    void receivedMsg(ProtocalEntity.Protocal protocal);
+    void receivedMsg(MessageProtocalEntity.Protocal protocal);
 
 
     /**

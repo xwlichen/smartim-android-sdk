@@ -2,7 +2,7 @@ package com.smart.im.android.sdk.core;
 
 import com.smart.im.android.sdk.ClientCoreWrapper;
 import com.smart.im.android.sdk.utils.LogUtils;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,7 +31,7 @@ public class ClientCoreHander {
     }
 
 
-    public void msgRecevied(ProtocalEntity.Protocal protocal){
+    public void msgRecevied(MessageProtocalEntity.Protocal protocal){
         if (protocal==null){
             return;
         }
