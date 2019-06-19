@@ -41,7 +41,7 @@ public class KeepAliveChannelInboundHandler extends ChannelInboundHandlerAdapter
                         heartbeatTask = new HeartbeatTask(ctx);
                     }
 
-                    clientCoreHandler.getClientCoreWrapper().getLoopGroup().execWorkTask(heartbeatTask);
+//                    clientCoreHandler.getClientCoreWrapper().getLoopGroup().execWorkTask(heartbeatTask);
                     break;
                 }
 

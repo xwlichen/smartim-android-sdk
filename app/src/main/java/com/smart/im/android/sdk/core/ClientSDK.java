@@ -18,6 +18,7 @@ import com.smart.im.protocal.proto.MessageProtocalEntity;
 import java.util.concurrent.TimeUnit;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -43,8 +44,6 @@ public class ClientSDK extends ClientCoreWrapper {
     private boolean isClosed = false;
     private boolean isReconnecting = false;// 是否正在进行重连
     private int connectStatus = ConfigEntity.CONNECT_STATE_FAILURE;//连接状态，初始化为连接失败
-
-
 
 
     public static ClientSDK getInstance() {
@@ -82,6 +81,11 @@ public class ClientSDK extends ClientCoreWrapper {
 
     @Override
     public MessageProtocalEntity.Protocal createKeepAliveMsg() {
+        return null;
+    }
+
+    @Override
+    public MessageProtocalEntity.Protocal createReciveAckMsg() {
         return null;
     }
 
@@ -188,13 +192,22 @@ public class ClientSDK extends ClientCoreWrapper {
     }
 
     @Override
-    public int sendMsg(MessageProtocalEntity.Protocal protocal) {
-        return 0;
+    public void sendMsg(MessageProtocalEntity.Protocal protocal) {
+        this.sendMsg(protocal, false);
     }
 
     @Override
-    public int sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager) {
-        return 0;
+    public void sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager) {
+        if (protocal == null || protocal.getHeader() == null) {
+            throw new NullPointerException("send protoal message is null");
+        }
+
+        try {
+            channel.writeAndFlush(protocal);
+        }catch (Exception e){
+            LogUtils.e(TAG,"发送消息失败");
+        }
+
     }
 
     @Override

@@ -67,9 +67,8 @@ public interface IClientCore {
      * 发送消息
      *
      * @param protocal 自定义消息协议
-     * @return code
      */
-    int sendMsg(MessageProtocalEntity.Protocal protocal);
+    void sendMsg(MessageProtocalEntity.Protocal protocal);
 
 
     /**
@@ -77,9 +76,8 @@ public interface IClientCore {
      *
      * @param protocal             自定义消息协议
      * @param isJoinTimeoutManager 是否加入发送超时管理器
-     * @return code
      */
-    int sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager);
+    void sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager);
 
 
     /**

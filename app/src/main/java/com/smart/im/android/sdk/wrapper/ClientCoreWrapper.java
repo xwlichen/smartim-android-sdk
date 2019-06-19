@@ -76,4 +76,11 @@ public abstract class ClientCoreWrapper implements IClientCore {
     public abstract MessageProtocalEntity.Protocal createKeepAliveMsg();
 
 
+    /**
+     * 创建收到回应消息
+     * @return
+     */
+    public abstract MessageProtocalEntity.Protocal createReciveAckMsg();
+
+
 }

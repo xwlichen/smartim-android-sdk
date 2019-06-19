@@ -16,7 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
  * @date : 2019-06-17 17:29
  * @author: lichen
  * @email : 1960003945@qq.com
- * @description :
+ * @description : 客户端消息处理
  */
 public class ClientCoreHander {
 
@@ -89,8 +89,13 @@ public class ClientCoreHander {
             case PUBLISH:
                 break;
             case PUBACK:
+                LogUtils.d(TAG,"收到服务端的发送响应包");
                 break;
             case RECEIVE:
+                LogUtils.d(TAG,"收到服务端的发送的消息");
+                MessageProtocalEntity.Protocal msg=clientCoreWrapper.createReciveAckMsg();
+                clientCoreWrapper.sendMsg(msg,true);
+                clientCoreWrapper.receivedMsg(protocal);
                 break;
             case RECEACK:
                 break;
@@ -115,7 +120,11 @@ public class ClientCoreHander {
     }
 
 
-    public void handleError(MessageProtocalEntity.Protocal protocal) {
+    /**
+     * 处理错误消息
+     * @param protocal
+     */
+    private void handleError(MessageProtocalEntity.Protocal protocal) {
         if (protocal == null) {
             return;
         }
