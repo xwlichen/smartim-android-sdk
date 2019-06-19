@@ -1,7 +1,12 @@
 package com.smart.im.android.sdk.core;
 
-import com.smart.im.android.sdk.ClientCoreWrapper;
+import android.text.TextUtils;
+
+import com.smart.im.android.sdk.entity.ConfigEntity;
+import com.smart.im.android.sdk.utils.GsonUtils;
 import com.smart.im.android.sdk.utils.LogUtils;
+import com.smart.im.android.sdk.wrapper.ClientCoreWrapper;
+import com.smart.im.protocal.entity.ErrorResponse;
 import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 import io.netty.channel.Channel;
@@ -31,10 +36,8 @@ public class ClientCoreHander {
     }
 
 
-    public void msgRecevied(MessageProtocalEntity.Protocal protocal){
-        if (protocal==null){
-            return;
-        }
+    public void msgRecevied(MessageProtocalEntity.Protocal protocal) {
+        dispathcMsg(protocal);
 
 
     }
@@ -68,6 +71,63 @@ public class ClientCoreHander {
 
         clientCoreWrapper.resetConnect(false);
 
+    }
+
+
+    private void dispathcMsg(MessageProtocalEntity.Protocal protocal) {
+        if (protocal == null) {
+            return;
+        }
+        switch (protocal.getHeader().getProtocalType()) {
+            case CONNECT:
+                break;
+            case CONNACK:
+                LogUtils.d(TAG, "登陆等相关验证信息验证成功");
+                //添加netty心跳管理，发送心跳信息
+                clientCoreWrapper.configureKeepAliveHandler();
+                break;
+            case PUBLISH:
+                break;
+            case PUBACK:
+                break;
+            case RECEIVE:
+                break;
+            case RECEACK:
+                break;
+            case PINGREQ:
+                break;
+            case PINGRESP:
+                LogUtils.d("收到服务断心跳响应消息，message=" + protocal.getHeader().getId()
+                        + "当前心跳间隔为：" + getClientCoreWrapper().createKeepAliveMsg() + "ms");
+                break;
+            case ERRORESP:
+                handleError(protocal);
+                break;
+            case DISCONNET:
+                if (clientCoreWrapper.getOnConnectListener() != null) {
+                    clientCoreWrapper.getOnConnectListener().onConnectStatus(ConfigEntity.CONNECT_STATE_BROKEN);
+                }
+                break;
+            case UNRECOGNIZED:
+            default:
+                break;
+        }
+    }
+
+
+    public void handleError(MessageProtocalEntity.Protocal protocal) {
+        if (protocal == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(protocal.getBody())) {
+            return;
+        }
+        ErrorResponse errorResponse = GsonUtils.init().fromJsonObject(protocal.getBody(), ErrorResponse.class);
+        if (errorResponse == null) {
+            return;
+        }
+
+        clientCoreWrapper.onErrorHandle(errorResponse);
     }
 
 }

@@ -61,28 +61,44 @@ public final class ProtocalTypeEntity {
     PUBACK(4),
     /**
      * <pre>
+     *接收
+     * </pre>
+     *
+     * <code>RECEIVE = 5;</code>
+     */
+    RECEIVE(5),
+    /**
+     * <pre>
+     *接收回应
+     * </pre>
+     *
+     * <code>RECEACK = 6;</code>
+     */
+    RECEACK(6),
+    /**
+     * <pre>
      *心跳请求
      * </pre>
      *
-     * <code>PINGREQ = 5;</code>
+     * <code>PINGREQ = 7;</code>
      */
-    PINGREQ(5),
+    PINGREQ(7),
     /**
      * <pre>
      *心跳回应
      * </pre>
      *
-     * <code>PINGRESP = 6;</code>
+     * <code>PINGRESP = 8;</code>
      */
-    PINGRESP(6),
+    PINGRESP(8),
     /**
      * <pre>
      *错误返回
      * </pre>
      *
-     * <code>ERRORESP = 7;</code>
+     * <code>ERRORESP = 9;</code>
      */
-    ERRORESP(7),
+    ERRORESP(9),
     UNRECOGNIZED(-1),
     ;
 
@@ -128,28 +144,44 @@ public final class ProtocalTypeEntity {
     public static final int PUBACK_VALUE = 4;
     /**
      * <pre>
+     *接收
+     * </pre>
+     *
+     * <code>RECEIVE = 5;</code>
+     */
+    public static final int RECEIVE_VALUE = 5;
+    /**
+     * <pre>
+     *接收回应
+     * </pre>
+     *
+     * <code>RECEACK = 6;</code>
+     */
+    public static final int RECEACK_VALUE = 6;
+    /**
+     * <pre>
      *心跳请求
      * </pre>
      *
-     * <code>PINGREQ = 5;</code>
+     * <code>PINGREQ = 7;</code>
      */
-    public static final int PINGREQ_VALUE = 5;
+    public static final int PINGREQ_VALUE = 7;
     /**
      * <pre>
      *心跳回应
      * </pre>
      *
-     * <code>PINGRESP = 6;</code>
+     * <code>PINGRESP = 8;</code>
      */
-    public static final int PINGRESP_VALUE = 6;
+    public static final int PINGRESP_VALUE = 8;
     /**
      * <pre>
      *错误返回
      * </pre>
      *
-     * <code>ERRORESP = 7;</code>
+     * <code>ERRORESP = 9;</code>
      */
-    public static final int ERRORESP_VALUE = 7;
+    public static final int ERRORESP_VALUE = 9;
 
 
     public final int getNumber() {
@@ -175,9 +207,11 @@ public final class ProtocalTypeEntity {
         case 2: return CONNACK;
         case 3: return PUBLISH;
         case 4: return PUBACK;
-        case 5: return PINGREQ;
-        case 6: return PINGRESP;
-        case 7: return ERRORESP;
+        case 5: return RECEIVE;
+        case 6: return RECEACK;
+        case 7: return PINGREQ;
+        case 8: return PINGRESP;
+        case 9: return ERRORESP;
         default: return null;
       }
     }
@@ -239,12 +273,12 @@ public final class ProtocalTypeEntity {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\023protocal_type.proto*y\n\014ProtocalType\022\r\n" +
-      "\tDISCONNET\020\000\022\013\n\007CONNECT\020\001\022\013\n\007CONNACK\020\002\022\013" +
-      "\n\007PUBLISH\020\003\022\n\n\006PUBACK\020\004\022\013\n\007PINGREQ\020\005\022\014\n\010" +
-      "PINGRESP\020\006\022\014\n\010ERRORESP\020\007B1\n\033com.smart.im" +
-      ".protocal.protoB\022ProtocalTypeEntityb\006pro" +
-      "to3"
+      "\n\023protocal_type.proto*\223\001\n\014ProtocalType\022\r" +
+      "\n\tDISCONNET\020\000\022\013\n\007CONNECT\020\001\022\013\n\007CONNACK\020\002\022" +
+      "\013\n\007PUBLISH\020\003\022\n\n\006PUBACK\020\004\022\013\n\007RECEIVE\020\005\022\013\n" +
+      "\007RECEACK\020\006\022\013\n\007PINGREQ\020\007\022\014\n\010PINGRESP\020\010\022\014\n" +
+      "\010ERRORESP\020\tB1\n\033com.smart.im.protocal.pro" +
+      "toB\022ProtocalTypeEntityb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -900,7 +900,7 @@ public final class MessageProtocalEntity {
      *
      * <code>.ProtocalType protocalType = 3;</code>
      */
-    com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType getProtocalType();
+    ProtocalTypeEntity.ProtocalType getProtocalType();
 
     /**
      * <pre>
@@ -917,7 +917,7 @@ public final class MessageProtocalEntity {
      *
      * <code>.MessageType messageType = 4;</code>
      */
-    com.smart.im.protocal.proto.MessageTypeEntity.MessageType getMessageType();
+    MessageTypeEntity.MessageType getMessageType();
 
     /**
      * <pre>
@@ -1250,10 +1250,10 @@ public final class MessageProtocalEntity {
      *
      * <code>.ProtocalType protocalType = 3;</code>
      */
-    public com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType getProtocalType() {
+    public ProtocalTypeEntity.ProtocalType getProtocalType() {
       @SuppressWarnings("deprecation")
-      com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType result = com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.valueOf(protocalType_);
-      return result == null ? com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.UNRECOGNIZED : result;
+      ProtocalTypeEntity.ProtocalType result = ProtocalTypeEntity.ProtocalType.valueOf(protocalType_);
+      return result == null ? ProtocalTypeEntity.ProtocalType.UNRECOGNIZED : result;
     }
 
     public static final int MESSAGETYPE_FIELD_NUMBER = 4;
@@ -1275,10 +1275,10 @@ public final class MessageProtocalEntity {
      *
      * <code>.MessageType messageType = 4;</code>
      */
-    public com.smart.im.protocal.proto.MessageTypeEntity.MessageType getMessageType() {
+    public MessageTypeEntity.MessageType getMessageType() {
       @SuppressWarnings("deprecation")
-      com.smart.im.protocal.proto.MessageTypeEntity.MessageType result = com.smart.im.protocal.proto.MessageTypeEntity.MessageType.valueOf(messageType_);
-      return result == null ? com.smart.im.protocal.proto.MessageTypeEntity.MessageType.UNRECOGNIZED : result;
+      MessageTypeEntity.MessageType result = MessageTypeEntity.MessageType.valueOf(messageType_);
+      return result == null ? MessageTypeEntity.MessageType.UNRECOGNIZED : result;
     }
 
     public static final int FROM_FIELD_NUMBER = 5;
@@ -1520,10 +1520,10 @@ public final class MessageProtocalEntity {
       if (bridge_ != false) {
         output.writeBool(2, bridge_);
       }
-      if (protocalType_ != com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.DISCONNET.getNumber()) {
+      if (protocalType_ != ProtocalTypeEntity.ProtocalType.DISCONNET.getNumber()) {
         output.writeEnum(3, protocalType_);
       }
-      if (messageType_ != com.smart.im.protocal.proto.MessageTypeEntity.MessageType.TXT.getNumber()) {
+      if (messageType_ != MessageTypeEntity.MessageType.TXT.getNumber()) {
         output.writeEnum(4, messageType_);
       }
       if (!getFromBytes().isEmpty()) {
@@ -1566,11 +1566,11 @@ public final class MessageProtocalEntity {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, bridge_);
       }
-      if (protocalType_ != com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.DISCONNET.getNumber()) {
+      if (protocalType_ != ProtocalTypeEntity.ProtocalType.DISCONNET.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, protocalType_);
       }
-      if (messageType_ != com.smart.im.protocal.proto.MessageTypeEntity.MessageType.TXT.getNumber()) {
+      if (messageType_ != MessageTypeEntity.MessageType.TXT.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, messageType_);
       }
@@ -2148,10 +2148,10 @@ public final class MessageProtocalEntity {
        *
        * <code>.ProtocalType protocalType = 3;</code>
        */
-      public com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType getProtocalType() {
+      public ProtocalTypeEntity.ProtocalType getProtocalType() {
         @SuppressWarnings("deprecation")
-        com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType result = com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.valueOf(protocalType_);
-        return result == null ? com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType.UNRECOGNIZED : result;
+        ProtocalTypeEntity.ProtocalType result = ProtocalTypeEntity.ProtocalType.valueOf(protocalType_);
+        return result == null ? ProtocalTypeEntity.ProtocalType.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -2160,7 +2160,7 @@ public final class MessageProtocalEntity {
        *
        * <code>.ProtocalType protocalType = 3;</code>
        */
-      public Builder setProtocalType(com.smart.im.protocal.proto.ProtocalTypeEntity.ProtocalType value) {
+      public Builder setProtocalType(ProtocalTypeEntity.ProtocalType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -2213,10 +2213,10 @@ public final class MessageProtocalEntity {
        *
        * <code>.MessageType messageType = 4;</code>
        */
-      public com.smart.im.protocal.proto.MessageTypeEntity.MessageType getMessageType() {
+      public MessageTypeEntity.MessageType getMessageType() {
         @SuppressWarnings("deprecation")
-        com.smart.im.protocal.proto.MessageTypeEntity.MessageType result = com.smart.im.protocal.proto.MessageTypeEntity.MessageType.valueOf(messageType_);
-        return result == null ? com.smart.im.protocal.proto.MessageTypeEntity.MessageType.UNRECOGNIZED : result;
+        MessageTypeEntity.MessageType result = MessageTypeEntity.MessageType.valueOf(messageType_);
+        return result == null ? MessageTypeEntity.MessageType.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -2225,7 +2225,7 @@ public final class MessageProtocalEntity {
        *
        * <code>.MessageType messageType = 4;</code>
        */
-      public Builder setMessageType(com.smart.im.protocal.proto.MessageTypeEntity.MessageType value) {
+      public Builder setMessageType(MessageTypeEntity.MessageType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -2847,8 +2847,8 @@ public final class MessageProtocalEntity {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.smart.im.protocal.proto.ProtocalTypeEntity.getDescriptor(),
-          com.smart.im.protocal.proto.MessageTypeEntity.getDescriptor(),
+          ProtocalTypeEntity.getDescriptor(),
+          MessageTypeEntity.getDescriptor(),
         }, assigner);
     internal_static_Protocal_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2862,8 +2862,8 @@ public final class MessageProtocalEntity {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Header_descriptor,
         new String[] { "Id", "Bridge", "ProtocalType", "MessageType", "From", "To", "GroupId", "QoS", "Typeu", "RetryCount", "Timestamp", "Extend", });
-    com.smart.im.protocal.proto.ProtocalTypeEntity.getDescriptor();
-    com.smart.im.protocal.proto.MessageTypeEntity.getDescriptor();
+    ProtocalTypeEntity.getDescriptor();
+    MessageTypeEntity.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

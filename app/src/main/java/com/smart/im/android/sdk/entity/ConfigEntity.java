@@ -29,6 +29,8 @@ public class ConfigEntity {
     public static final int CONNECT_STATE_CONNECTING = 0;
     //连接状态：连接成功
     public static final int CONNECT_STATE_SUCCESSFUL = 1;
+    //连接状态：被踢出
+    public static final int CONNECT_STATE_BROKEN = 2;
     //连接状态：连接失败
     public static final int CONNECT_STATE_FAILURE = -1;
 

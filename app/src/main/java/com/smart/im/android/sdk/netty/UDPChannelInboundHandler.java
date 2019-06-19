@@ -1,16 +1,11 @@
-package com.smart.im.android.sdk.core;
+package com.smart.im.android.sdk.netty;
 
-import android.util.Log;
-
+import com.smart.im.android.sdk.core.ClientCoreHander;
 import com.smart.im.android.sdk.utils.LogUtils;
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
-import java.util.logging.Logger;
-
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * @date : 2019-06-17 17:30
@@ -52,7 +47,7 @@ public class UDPChannelInboundHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public void channelRead(ChannelHandlerContext ctx,  Object msg) throws Exception {
-        ProtocalEntity.Protocal protocal=(ProtocalEntity.Protocal)msg;
+        MessageProtocalEntity.Protocal protocal=(MessageProtocalEntity.Protocal)msg;
         clientCoreHandler.msgRecevied(protocal);
     }
 }

@@ -4,6 +4,7 @@ import com.smart.im.android.sdk.entity.ConfigEntity;
 import com.smart.im.android.sdk.listener.OnConnectListener;
 import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
+import com.smart.im.protocal.entity.ErrorResponse;
 import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 /**
@@ -13,8 +14,6 @@ import com.smart.im.protocal.proto.MessageProtocalEntity;
  * @description :
  */
 public interface IClientCore {
-
-
 
 
     /**
@@ -58,6 +57,11 @@ public interface IClientCore {
      */
     boolean isConnect();
 
+    /**
+     * 设置netty的心跳handler配置
+     */
+    void configureKeepAliveHandler();
+
 
     /**
      * 发送消息
@@ -78,13 +82,25 @@ public interface IClientCore {
     int sendMsg(MessageProtocalEntity.Protocal protocal, boolean isJoinTimeoutManager);
 
 
+    /**
+     * 接受的信息
+     *
+     * @param protocal
+     */
     void receivedMsg(MessageProtocalEntity.Protocal protocal);
+
+
+    /**
+     * 根据错误code 在应用层进行相应处理
+     *
+     * @param error ERRORCODE
+     */
+    void onErrorHandle(ErrorResponse error);
 
 
     /**
      * 释放资源，关闭连接
      */
     void release();
-
 
 }

@@ -1,6 +1,8 @@
-package com.smart.im.android.sdk.core;
+package com.smart.im.android.sdk.netty;
 
-import com.smart.im.protocal.proto.ProtocalEntity;
+import com.smart.im.android.sdk.core.ClientCoreHander;
+import com.smart.im.android.sdk.utils.LogUtils;
+import com.smart.im.protocal.proto.MessageProtocalEntity;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -13,11 +15,11 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @email : 1960003945@qq.com
  * @description :
  */
-public class KeepAliveHandler extends ChannelInboundHandlerAdapter {
+public class KeepAliveChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     private ClientCoreHander clientCoreHandler;
 
-    public KeepAliveHandler(ClientCoreHander clientCoreHandler) {
+    public KeepAliveChannelInboundHandler(ClientCoreHander clientCoreHandler) {
         this.clientCoreHandler = clientCoreHandler;
     }
 
@@ -42,6 +44,9 @@ public class KeepAliveHandler extends ChannelInboundHandlerAdapter {
                     clientCoreHandler.getClientCoreWrapper().getLoopGroup().execWorkTask(heartbeatTask);
                     break;
                 }
+
+                default:
+                    break;
             }
         }
     }
@@ -59,11 +64,11 @@ public class KeepAliveHandler extends ChannelInboundHandlerAdapter {
         @Override
         public void run() {
             if (ctx.channel().isActive()) {
-                ProtocalEntity.Protocal msg = clientCoreHandler.getClientCoreWrapper().createKeepAliveMsg();
+                MessageProtocalEntity.Protocal msg = clientCoreHandler.getClientCoreWrapper().createKeepAliveMsg();
                 if (msg == null) {
                     return;
                 }
-                System.out.println("发送心跳消息，message=" + msg + "当前心跳间隔为：" + clientCoreHandler.getClientCoreWrapper().createKeepAliveMsg() + "ms\n");
+                LogUtils.d("发送心跳消息，message=" + msg + "当前心跳间隔为：" + clientCoreHandler.getClientCoreWrapper().createKeepAliveMsg() + "ms");
                 clientCoreHandler.getClientCoreWrapper().sendMsg(msg, false);
             }
         }

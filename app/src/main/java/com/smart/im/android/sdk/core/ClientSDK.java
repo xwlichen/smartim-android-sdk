@@ -2,21 +2,27 @@ package com.smart.im.android.sdk.core;
 
 import android.text.TextUtils;
 
-import com.smart.im.android.sdk.ClientCoreWrapper;
 import com.smart.im.android.sdk.entity.ConfigEntity;
 import com.smart.im.android.sdk.listener.OnConnectListener;
 import com.smart.im.android.sdk.listener.OnEventListener;
 import com.smart.im.android.sdk.listener.OnQosListener;
 import com.smart.im.android.sdk.manager.ExecutorServiceFactory;
+import com.smart.im.android.sdk.netty.KeepAliveChannelInboundHandler;
+import com.smart.im.android.sdk.netty.UDPChannelInboundHandler;
+import com.smart.im.android.sdk.netty.UDPChannelInitializerHandler;
 import com.smart.im.android.sdk.utils.LogUtils;
+import com.smart.im.android.sdk.wrapper.ClientCoreWrapper;
+import com.smart.im.protocal.entity.ErrorResponse;
 import com.smart.im.protocal.proto.MessageProtocalEntity;
 
+import java.util.concurrent.TimeUnit;
+
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 
 import static com.smart.im.android.sdk.entity.ConfigEntity.DEFAULT_RECONNECT_INTERVAL;
 
@@ -34,20 +40,11 @@ public class ClientSDK extends ClientCoreWrapper {
     private static volatile ClientSDK instance;
 
     private Bootstrap bootstrap;
-    private Channel channel;
-    private ClientCoreHander clientCoreHander;
     private boolean isClosed = false;
     private boolean isReconnecting = false;// 是否正在进行重连
     private int connectStatus = ConfigEntity.CONNECT_STATE_FAILURE;//连接状态，初始化为连接失败
 
-    private OnEventListener onEventListener;
-    private OnConnectListener onConnectListener;
-    private OnQosListener onQosListener;
 
-
-//    private int reconnectInterval = DEFAULT_RECONNECT_INTERVAL;
-//    private int connectTimeout = ConfigEntity.DEFAULT_CONNECT_TIMEOUT;
-//    private int keepAliveIntercal = ConfigEntity.DEFAULT_KEEPALIVE_INTERVAL;
 
 
     public static ClientSDK getInstance() {
@@ -59,6 +56,10 @@ public class ClientSDK extends ClientCoreWrapper {
         return instance;
     }
 
+    public ClientSDK() {
+        clientCoreHander = new ClientCoreHander(this);
+
+    }
 
     public static void setDebug(boolean debug) {
         ClientSDK.DEBUG = debug;
@@ -84,6 +85,7 @@ public class ClientSDK extends ClientCoreWrapper {
         return null;
     }
 
+
     @Override
     public void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener) {
         release();
@@ -108,7 +110,6 @@ public class ClientSDK extends ClientCoreWrapper {
         loopGroup.initBossLoopGroup();// 初始化重连线程组
 
         reConnect();
-
 
 
     }
@@ -155,6 +156,38 @@ public class ClientSDK extends ClientCoreWrapper {
     }
 
     @Override
+    public void configureKeepAliveHandler() {
+        if (channel == null || !channel.isActive() || channel.pipeline() == null) {
+            return;
+        }
+
+        try {
+            // 之前存在的读写超时handler，先移除掉，再重新添加
+            if (channel.pipeline().get(IdleStateHandler.class.getSimpleName()) != null) {
+                channel.pipeline().remove(IdleStateHandler.class.getSimpleName());
+            }
+            // 3次心跳没响应，代表连接已断开
+            channel.pipeline().addFirst(IdleStateHandler.class.getSimpleName(), new IdleStateHandler(
+                    ConfigEntity.DEFAULT_KEEPALIVE_INTERVAL * 3, ConfigEntity.DEFAULT_KEEPALIVE_INTERVAL, 0, TimeUnit.MILLISECONDS));
+
+            // 重新添加HeartbeatHandler
+            if (channel.pipeline().get(KeepAliveChannelInboundHandler.class.getSimpleName()) != null) {
+                channel.pipeline().remove(KeepAliveChannelInboundHandler.class.getSimpleName());
+            }
+            if (clientCoreHander == null) {
+                clientCoreHander = new ClientCoreHander(this);
+            }
+            if (channel.pipeline().get(UDPChannelInboundHandler.class.getSimpleName()) != null) {
+                channel.pipeline().addBefore(UDPChannelInboundHandler.class.getSimpleName(), KeepAliveChannelInboundHandler.class.getSimpleName(),
+                        new KeepAliveChannelInboundHandler(clientCoreHander));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("添加心跳消息管理handler失败，reason：" + e.getMessage());
+        }
+    }
+
+    @Override
     public int sendMsg(MessageProtocalEntity.Protocal protocal) {
         return 0;
     }
@@ -169,6 +202,11 @@ public class ClientSDK extends ClientCoreWrapper {
         if (onEventListener != null) {
             onEventListener.dispatchMsg(protocal);
         }
+
+    }
+
+    @Override
+    public void onErrorHandle(ErrorResponse error) {
 
     }
 
@@ -206,7 +244,9 @@ public class ClientSDK extends ClientCoreWrapper {
                 .option(ChannelOption.SO_SNDBUF, 1024);
         ;
         // 设置初始化Channel
-        clientCoreHander = new ClientCoreHander(this);
+        if (clientCoreHander == null) {
+            clientCoreHander = new ClientCoreHander(this);
+        }
         bootstrap.handler(new UDPChannelInitializerHandler(clientCoreHander));
     }
 
