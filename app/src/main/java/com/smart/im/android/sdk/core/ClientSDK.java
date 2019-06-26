@@ -255,7 +255,6 @@ public class ClientSDK extends ClientCoreWrapper {
         bootstrap.group(loopGroup).channel(NioDatagramChannel.class)
                 .option(ChannelOption.SO_RCVBUF, 1024)
                 .option(ChannelOption.SO_SNDBUF, 1024);
-        ;
         // 设置初始化Channel
         if (clientCoreHander == null) {
             clientCoreHander = new ClientCoreHander(this);
