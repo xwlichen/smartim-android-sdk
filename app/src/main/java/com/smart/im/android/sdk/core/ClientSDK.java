@@ -91,7 +91,7 @@ public class ClientSDK extends ClientCoreWrapper {
 
 
     @Override
-    public void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener) {
+    public void init( OnEventListener onEventListener, OnConnectListener onConnectListener) {
         release();
         isClosed = false;
         this.onEventListener = onEventListener;
@@ -104,7 +104,7 @@ public class ClientSDK extends ClientCoreWrapper {
     }
 
     @Override
-    public void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener) {
+    public void init( OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener) {
         release();
         isClosed = false;
         this.onEventListener = onEventListener;

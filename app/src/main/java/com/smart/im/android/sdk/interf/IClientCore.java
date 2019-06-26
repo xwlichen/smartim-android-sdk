@@ -19,22 +19,20 @@ public interface IClientCore {
     /**
      * client 初始化
      *
-     * @param config            配置信息
      * @param onEventListener   事件消息回调
      * @param onConnectListener 连接消息回调
      */
-    void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener);
+    void init( OnEventListener onEventListener, OnConnectListener onConnectListener);
 
 
     /**
      * client 初始化
      *
-     * @param config            配置信息
      * @param onEventListener   事件消息回调
      * @param onConnectListener 连接消息回调
      * @param onQosListener     心跳消息回调
      */
-    void init(ConfigEntity config, OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener);
+    void init( OnEventListener onEventListener, OnConnectListener onConnectListener, OnQosListener onQosListener);
 
 
     /**
